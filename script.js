@@ -20,7 +20,6 @@ function getUserName() {
   return name;
 }
 
-
 function getUser (avatar, profileDescription, profileLink, currentDateHTML) {
   const currentDate = new Promise ((resolve, redject) => {
     setTimeout(() => {
@@ -47,11 +46,16 @@ function getUser (avatar, profileDescription, profileLink, currentDateHTML) {
       let dateStr = day + " " + fMonth + " " + year + " года";
       resolve(currentDateHTML.innerHTML = dateStr);
       redject(console.log("Не удалось вычислить дату"));
-    }, 4000);
+    }, 5000);
   });
 
-  Promise.all ([currentDate])
-    .then (([currentDate]) => fetch(githubAPIURL + userName)) 
+  const userUrl = githubAPIURL + userName;
+  const getUrl = new Promise((resolve, reject) => {
+   setTimeout(() => userUrl ? resolve(userUrl) : reject('Данные отсутствуют'), 5000);
+  })
+
+  Promise.all ([getUrl, currentDate])
+    .then (([getUrl, currentDate]) => fetch(userUrl)) 
     .then (res =>  res.json())
     .then (json => {
       if (json.message !== undefined) {
